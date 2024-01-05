@@ -1,10 +1,10 @@
-package at.xirado.ktbin.http
+package at.xirado.ktbin.internal.http
 
-import at.xirado.ktbin.Ktbin
+import at.xirado.ktbin.api.Ktbin
 import io.ktor.http.*
 import io.ktor.util.reflect.*
 
-class Request<T, A>(
+internal class Request<T, A>(
     val app: Ktbin,
     val route: Route.CompiledRoute,
     val body: T,

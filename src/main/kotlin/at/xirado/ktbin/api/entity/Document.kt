@@ -3,10 +3,9 @@ package at.xirado.ktbin.api.entity
 import at.xirado.ktbin.api.FileData
 import at.xirado.ktbin.api.Formatter
 import at.xirado.ktbin.api.KtbinEntity
-import at.xirado.ktbin.api.Language
-import at.xirado.ktbin.http.createUrl
-import at.xirado.ktbin.Ktbin
-import at.xirado.ktbin.http.Route
+import at.xirado.ktbin.internal.http.createUrl
+import at.xirado.ktbin.api.Ktbin
+import at.xirado.ktbin.internal.http.Route
 
 /**
  * A Gobin document.
@@ -21,12 +20,12 @@ interface Document : KtbinEntity {
     val key: String
 
     /**
-     * The unix timestamp representing the time this document (version) was created
+     * Unix timestamp representing the time this document (or version!) was created.
      */
     val version: Long
 
     /**
-     * The list of [files][DocumentFile] contained in this document.
+     * List of [files][DocumentFile] contained in this document.
      */
     val files: List<DocumentFile>
 
@@ -50,36 +49,25 @@ interface Document : KtbinEntity {
         ktbin.host.createUrl(Route.GET_DOCUMENT_VERSION_PREVIEW.compile(key, version.toString())).toString()
 
     /**
-     * Retrieves a [file][DocumentFile] contained in this document.
+     * Gets a [file][DocumentFile] contained in this document.
      *
      * @param fileName The name of the file to get
-     * @param version The [version][Document.version] of the file to get
-     * @param formatter The formatter used to [format][DocumentFile.formatted] this file
-     * @param styleName The name of the style used in combination with [formatter]
-     * @param language The [Language] to show this file as
      *
-     * @return [DocumentFile] of this document, or `null` if the document in question,
-     * or a file with this name does not exist.
+     * @return [DocumentFile] of this document, or `null` if a file with this name does not exist.
      */
-    suspend fun getFile(
-        fileName: String,
-        version: Long? = null,
-        formatter: Formatter? = null,
-        styleName: String? = null,
-        language: Language? = null
-    ): DocumentFile? = ktbin.getDocumentFile(key, fileName, version, formatter, styleName, language)
+    fun getFile(fileName: String): DocumentFile? = files.find { it.name == fileName }
 
     /**
      * Retrieves all versions of this document.
      *
-     * Each version snapshot is represented by its own [Document] object.
+     * Each [version][version] snapshot is represented by its own [Document] object.
      *
-     * @param formatter   The formatter used to [format][DocumentFile.formatted] this file
-     * @param styleName   The name of the style used in combination with [formatter]
-     * @param withContent Whether the [content][DocumentFile.content] of each file should be included. (Default: `true`)
+     * @param formatter   The default [Formatter] used to [format][DocumentFile.formatted] the files.
+     * @param styleName   The name of the style used in combination with [formatter].
+     * @param withContent Whether the [content][DocumentFile.content] of each file should be included. (Default: `true`).
      *
      * @return List of [Documents][Document] containing each version of this document as a snapshot, or `null`, if this
-     * document has been deleted.
+     * document no longer exists.
      */
     suspend fun getVersions(
         formatter: Formatter? = null,
@@ -87,8 +75,17 @@ interface Document : KtbinEntity {
         withContent: Boolean = true
     ): List<Document>? = ktbin.getDocumentVersions(key, formatter, styleName, withContent)
 
+    /**
+     * Updates this document with a new collection of [files][FileData].
+     *
+     * This will return a new [Document] representing the current snapshot.
+     *
+     * @param newFiles  Collection of [FileData] to use as the new set of files.
+     * @param formatter The default [Formatter] used to [format][DocumentFile.formatted] the files.
+     * @param styleName The name of the style used in combination with [formatter].
+     */
     suspend fun update(
-        newFiles: List<FileData>,
+        newFiles: Collection<FileData>,
         formatter: Formatter? = null,
         styleName: String? = null
     ): Document? {

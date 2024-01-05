@@ -1,9 +1,11 @@
-package at.xirado.ktbin.http
+package at.xirado.ktbin.internal.http
 
-import at.xirado.ktbin.Ktbin
-import at.xirado.ktbin.http.ratelimit.RateLimiter
-import at.xirado.ktbin.http.ratelimit.rateLimitHeaders
-import at.xirado.ktbin.json
+import at.xirado.ktbin.api.GobinHost
+import at.xirado.ktbin.api.Ktbin
+import at.xirado.ktbin.api.exception.GobinAPIException
+import at.xirado.ktbin.internal.http.ratelimit.RateLimiter
+import at.xirado.ktbin.internal.http.ratelimit.rateLimitHeaders
+import at.xirado.ktbin.api.json
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.request.*
 import io.ktor.client.statement.*

@@ -1,4 +1,4 @@
-package at.xirado.ktbin.http
+package at.xirado.ktbin.api.exception
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

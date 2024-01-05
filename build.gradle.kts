@@ -28,6 +28,7 @@ dependencies {
 
     api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1")
 
+    testImplementation("ch.qos.logback:logback-classic:1.4.7")
     testImplementation(kotlin("test"))
 }
 

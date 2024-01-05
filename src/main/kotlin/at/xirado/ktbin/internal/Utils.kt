@@ -1,4 +1,4 @@
-package at.xirado.ktbin
+package at.xirado.ktbin.internal
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.*

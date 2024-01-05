@@ -4,7 +4,7 @@ package at.xirado.ktbin.api
  * Languages used to describe the type of Gobin [File][at.xirado.ktbin.api.entity.DocumentFile]
  *
  * If you want Gobin to try to detect the language using the filename or the content automatically,
- * [Language.AUTO] can be used.
+ * [AUTO][Language.AUTO] can be used.
  *
  * @see language
  */
@@ -229,4 +229,4 @@ enum class Language(val id: String) {
  */
 fun language(name: String) = Language.entries.find {
     it.id.equals(name, ignoreCase = true)
-}
+} ?: Language.AUTO

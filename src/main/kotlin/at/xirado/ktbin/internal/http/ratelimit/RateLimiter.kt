@@ -1,6 +1,6 @@
-package at.xirado.ktbin.http.ratelimit
+package at.xirado.ktbin.internal.http.ratelimit
 
-import at.xirado.ktbin.http.Request
+import at.xirado.ktbin.internal.http.Request
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.minutes
 
 private val log = KotlinLogging.logger { }
 
-class RateLimiter(private val coroutineScope: CoroutineScope) {
+internal class RateLimiter(coroutineScope: CoroutineScope) {
     private val buckets: MutableMap<String, Bucket> = mutableMapOf()
     private val mutex: Mutex = Mutex()
 
@@ -41,7 +41,7 @@ class RateLimiter(private val coroutineScope: CoroutineScope) {
         val path = route.path
 
         val bucket = mutex.withLock {
-            buckets.getOrPut(path) { Bucket(route.path) }
+            buckets.getOrPut(path) { Bucket(route.path, updateLock = mutex) }
         }
 
         val response = bucket.limit(block)

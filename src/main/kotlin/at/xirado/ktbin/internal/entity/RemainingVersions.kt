@@ -1,8 +1,8 @@
-package at.xirado.ktbin.api.entity
+package at.xirado.ktbin.internal.entity
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RemainingVersions(
+internal data class RemainingVersions(
     val versions: Int
 )

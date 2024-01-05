@@ -1,9 +1,9 @@
-package at.xirado.ktbin.http.ratelimit
+package at.xirado.ktbin.internal.http.ratelimit
 
 import io.ktor.http.*
 import java.time.Instant
 
-data class RateLimitResponse(
+internal data class RateLimitResponse(
     val limit: Int,
     val remaining: Int,
     val reset: Long,
@@ -15,7 +15,7 @@ data class RateLimitResponse(
     }
 }
 
-fun Headers.rateLimitHeaders(): RateLimitResponse? {
+internal fun Headers.rateLimitHeaders(): RateLimitResponse? {
     val limit = get("X-Ratelimit-Limit")?.toIntOrNull()
     val remaining = get("X-Ratelimit-Remaining")?.toIntOrNull()
     val reset = get("X-Ratelimit-Reset")?.toLongOrNull()

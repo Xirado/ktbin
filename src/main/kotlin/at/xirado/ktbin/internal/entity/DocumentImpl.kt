@@ -1,6 +1,6 @@
 package at.xirado.ktbin.internal.entity
 
-import at.xirado.ktbin.Ktbin
+import at.xirado.ktbin.api.Ktbin
 import at.xirado.ktbin.api.entity.Document
 import at.xirado.ktbin.api.entity.DocumentFile
 import kotlinx.serialization.Serializable

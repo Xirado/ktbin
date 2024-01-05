@@ -1,5 +1,10 @@
 package at.xirado.ktbin.api
 
+/**
+ * Formatter used for formatting files for different environments
+ *
+ * @see [at.xirado.ktbin.api.entity.DocumentFile.formatted]
+ */
 enum class Formatter(val id: String) {
     TERMINAL_8("terminal8"),
     TERMINAL_16("terminal16"),

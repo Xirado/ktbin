@@ -1,10 +1,10 @@
-package at.xirado.ktbin.http
+package at.xirado.ktbin.internal.http
 
 import io.ktor.http.*
 
-private val routeParamRegex = """\{(\w+)\}""".toRegex()
+private val routeParamRegex = """\{(\w+)}""".toRegex()
 
-class Route private constructor(val httpMethod: HttpMethod, val path: String) {
+internal class Route private constructor(val httpMethod: HttpMethod, val path: String) {
     fun compile(vararg args: String): CompiledRoute {
         var currentParamCount = 0
 
@@ -20,7 +20,7 @@ class Route private constructor(val httpMethod: HttpMethod, val path: String) {
         return CompiledRoute(this, compiledPath)
     }
 
-    class CompiledRoute internal constructor(val route: Route, val path: String) {
+    class CompiledRoute(val route: Route, val path: String) {
         override fun toString(): String = "Route(${route.httpMethod.value} $path)"
     }
 

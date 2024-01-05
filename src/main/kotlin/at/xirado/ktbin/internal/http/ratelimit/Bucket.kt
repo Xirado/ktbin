@@ -1,4 +1,4 @@
-package at.xirado.ktbin.http.ratelimit
+package at.xirado.ktbin.internal.http.ratelimit
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.delay
@@ -8,7 +8,13 @@ import java.time.Instant
 
 private val log = KotlinLogging.logger { }
 
-class Bucket(val path: String, limit: Int = 0, remaining: Int = 0, reset: Long = 0) {
+internal class Bucket(
+    val path: String,
+    limit: Int = 0,
+    remaining: Int = 0,
+    reset: Long = 0,
+    val updateLock: Mutex,
+) {
     var limit: Int = limit
         private set
     var remaining: Int = remaining
@@ -16,11 +22,10 @@ class Bucket(val path: String, limit: Int = 0, remaining: Int = 0, reset: Long =
     var reset: Long = reset
         private set
 
-    private val mutex = Mutex()
-    private val executionMutex = Mutex()
+    private val execLock = Mutex()
 
     suspend fun <T> limit(block: suspend () -> T): T {
-        val delay: Long = mutex.withLock {
+        val delay: Long = updateLock.withLock {
             if (reset == 0L)
                 return@withLock 0L
 
@@ -30,7 +35,7 @@ class Bucket(val path: String, limit: Int = 0, remaining: Int = 0, reset: Long =
                 0L
         }
 
-        return executionMutex.withLock {
+        return execLock.withLock {
             if (delay > 0) {
                 log.debug { "Waiting ${delay}ms to avoid rate-limit on $path" }
                 delay(delay)
@@ -40,7 +45,7 @@ class Bucket(val path: String, limit: Int = 0, remaining: Int = 0, reset: Long =
     }
 
     suspend fun update(limit: Int? = null, remaining: Int? = null, reset: Long? = null) {
-        mutex.withLock {
+        updateLock.withLock {
             limit?.let { this.limit = it }
             remaining?.let { this.remaining = it }
             reset?.let { this.reset = it }
